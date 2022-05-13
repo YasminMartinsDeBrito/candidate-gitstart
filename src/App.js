@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import ListUsers from './components/listUsers';
 import './App.css';
 
 const App = () => {
@@ -19,8 +18,6 @@ const App = () => {
     // return if it was sucessfull or not
     return Math.random() > 0.1 ? true : false;
   };
-
-
   /*
     Question 1: 
     Find all online users and send them emails. Render the users for which the emails were successfully sent
