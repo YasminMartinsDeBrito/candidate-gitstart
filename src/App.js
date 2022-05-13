@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ListUsers from './components/UserList';
+import ListUsers from './components/listUsers';
 import './App.css';
 
 const App = () => {
