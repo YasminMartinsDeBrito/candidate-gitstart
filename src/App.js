@@ -3,12 +3,7 @@ import ListUsers from './components/listUsers';
 import './App.css';
 
 const App = () => {
-  const [user, setUser] = useState([]);
-  const [status, setStatus] = useState([]);
-
-  const userRandom = Math.floor(Math.random() * user.length);
-  const userId = user[userRandom];
-  
+  const [users, setUsers] = useState([]);
 
   const fetchUserIds = async () => {
     return ["john.smith", "sara.lee", "jack.ma"];
@@ -26,24 +21,6 @@ const App = () => {
   };
 
 
-  const getEmail = async () => {
-    const email = await sendEmail(userId);
-    return email
-  }
-
-  useEffect(() => {
-    (async () => {
-      const statu = await checkStatus(userId);
-      setStatus(statu);
-    })();
-  }, [userId]);
-
-  useEffect(() => {
-    (async () => {
-      const email = await getEmail();
-      return email
-    })();
-  }, []);
   /*
     Question 1: 
     Find all online users and send them emails. Render the users for which the emails were successfully sent
@@ -55,17 +32,37 @@ const App = () => {
   
   */
 
+    useEffect(() => {
+      const getUserAndSendEmail = async () => {
+        const users = await fetchUserIds();
+        const userOnline = await Promise.all(users.map(user => {
+          return checkStatus(user)
+        }))
+
+        const userEmailSend = []
+
+        await Promise.all(userOnline.map(async user => {
+          if(user.status === "online"){
+            const isEmailSucessfullySent = await sendEmail(user.id);
+            if( isEmailSucessfullySent){
+              userEmailSend.push(user.id)
+            }
+          }
+        }))
+        setUsers(userEmailSend)
+      }
+      getUserAndSendEmail()
+    }, [])
+
   return (
     <div className="App">
       <div className="App-header">
-      <ListUsers fetchUserIds={fetchUserIds} user={user} setUser={setUser} />
         <div>
               <ul>
                 <h2>Usuario online</h2>
-                {status.status === 'online' &&
-                  user.map((user) => (
+                {users.map((user) => (
                     <li key={user}>
-                      {(status.id = user)} - Email enviado - {status.status}
+                      {user}
                     </li>
                   ))}
               </ul>
